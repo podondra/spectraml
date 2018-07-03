@@ -1,6 +1,6 @@
 import numpy as np
 from astropy.io import fits
-from click import progressbar
+import click
 from .preprocessing import N_WAVELENGTHS, interp_flux, preprocess_spectrum
 from .utils import gen_files_with_ext
 
@@ -19,11 +19,18 @@ def read_spectrum(filename):
     return wave, flux
 
 
-def preprocess_spectra(path, the_ext='.fits'):
+def preprocess_spectra(path, the_ext='.fits', verbose=False):
     fits_files = list(gen_files_with_ext(path, the_ext))
     spectra = np.zeros((len(fits_files), N_WAVELENGTHS))
-    with progressbar(enumerate(fits_files)) as bar:
-        for idx, f in bar:
+    if verbose:
+        fits_files = click.progressbar(fits_files)
+        fits_files.__enter__()
+    for idx, f in enumerate(fits_files):
+        try:
             wave, flux = read_spectrum(f)
-            _, spectra[idx] = preprocess_spectrum(wave, flux)
+        except OSError as e:
+            continue
+        _, spectra[idx] = preprocess_spectrum(wave, flux)
+    if verbose:
+        fits_files.__exit__(None, None, None)
     return spectra
