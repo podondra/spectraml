@@ -8,8 +8,9 @@ DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 def test_read_spectrum():
     """Test if a LAMOST FITS file can be read."""
     f = os.path.join(DATA, 'spec-55916-B5591606_sp01-001.fits')
-    wave, flux = lamost.read_spectrum(f)
+    identifier, wave, flux = lamost.read_spectrum(f)
     # TODO come up with better test
+    assert isinstance(identifier, str)
     assert wave is not None and flux is not None
 
 

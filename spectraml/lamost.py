@@ -10,13 +10,15 @@ def read_spectrum(filename):
     with fits.open(filename) as hdulist:
         # assert wavelengths are vacuum
         header = hdulist[0].header
+        data = hdulist[0].data
         assert header['VACUUM']
         # the FITS in LAMOST DR2 has 1 HDU the primary HDU
         # the data unit contains Flux, Inverse Variance,
         #   Wavelength, Andmask, Ormask
-        flux = hdulist[0].data[0]
-        wave = hdulist[0].data[2]
-    return wave, flux
+        identifier = header['FILENAME']
+        flux = data[0]
+        wave = data[2]
+    return identifier, wave, flux
 
 
 def preprocess_spectra(path, the_ext='.fits', verbose=False):
@@ -27,7 +29,7 @@ def preprocess_spectra(path, the_ext='.fits', verbose=False):
         fits_files.__enter__()
     for idx, f in enumerate(fits_files):
         try:
-            wave, flux = read_spectrum(f)
+            identifier, wave, flux = read_spectrum(f)
         except OSError as e:
             continue
         _, spectra[idx] = preprocess_spectrum(wave, flux)
