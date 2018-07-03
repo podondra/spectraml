@@ -13,12 +13,12 @@ def cli():
 @cli.command()
 @click.argument('path', type=click.Path(exists=True))  # TODO document
 # TODO help message
-@click.option('-o', '--out-file', default='spectra.csv', type=click.File('w'))
+@click.option('-o', '--out-file', default='data.csv', type=click.File('w'))
 def preprocessing(path, out_file):
     # preprocess spectra
-    spectra = preprocess_spectra(path, verbose=True)
+    df = preprocess_spectra(path, verbose=True)
     # write them to a out_file
-    np.savetxt(out_file, spectra, delimiter=',')
+    df.to_csv(out_file)
 
 
 @cli.command()
