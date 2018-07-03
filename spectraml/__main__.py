@@ -1,4 +1,4 @@
-from .lamost import main
+from .cli import cli
 
 
-main()
+cli()

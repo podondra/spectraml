@@ -24,7 +24,7 @@ setup(
             ],
         entry_points={
             'console_scripts': [
-                'preprocessing_test = spectraml.lamost:main',
+                'spectraml = spectraml.cli:cli',
                 ],
             },
         install_requires=['numpy', 'astropy'],  # TODO
