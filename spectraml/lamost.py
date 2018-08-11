@@ -1,6 +1,6 @@
 import os
 import warnings
-import numpy as np
+import numpy
 import pandas
 from astropy.io import fits
 from astropy.utils.exceptions import AstropyWarning
@@ -32,8 +32,8 @@ def preprocess_spectra(path, the_ext='.fits', verbose=False):
     warnings.simplefilter('ignore', category=AstropyWarning)
 
     identifiers = list()
-    fluxes = np.zeros((len(fits_files), N_WAVELENGTHS))
-    corrupted = np.zeros(len(fits_files), dtype=np.bool_)
+    fluxes = numpy.zeros((len(fits_files), N_WAVELENGTHS))
+    corrupted = numpy.zeros(len(fits_files), dtype=numpy.bool_)
 
     if verbose:
         fits_files = click.progressbar(fits_files)
@@ -57,7 +57,8 @@ def preprocess_spectra(path, the_ext='.fits', verbose=False):
     # construct pandas DataFrame
     df = pandas.DataFrame(
             fluxes,
-            index=identifiers, columns=np.linspace(START, END, N_WAVELENGTHS)
+            index=identifiers,
+            columns=numpy.linspace(START, END, N_WAVELENGTHS)
             )
     df['corrupted'] = corrupted
     df.index.name = 'identifier'
