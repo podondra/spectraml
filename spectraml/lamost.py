@@ -5,8 +5,7 @@ import pandas
 from astropy.io import fits
 from astropy.utils.exceptions import AstropyWarning
 import click
-from .preprocessing import START, END, N_WAVELENGTHS, interp_flux, \
-        preprocess_spectrum
+from .preprocessing import START, END, N_WAVELENGTHS, preprocess_spectrum
 from .utils import gen_files_with_ext
 
 
@@ -23,6 +22,11 @@ def read_spectrum(filename):
         flux = hdulist[0].data[0]
         wave = hdulist[0].data[2]
     return identifier, wave, flux
+
+
+def read_dr1_spectrum(filename):
+    # TODO read a LAMOST DR1 spectrum
+    raise NotImplementedError
 
 
 def preprocess_spectra(path, the_ext='.fits', verbose=False):
