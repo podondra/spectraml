@@ -27,7 +27,7 @@ setup(
                 'spectraml = spectraml.cli:cli',
                 ],
             },
-        install_requires=['numpy', 'astropy'],  # TODO
+        install_requires=['numpy', 'astropy', 'pandas', 'click'],  # TODO
         setup_requires=['pytest-runner'],
         tests_reqires=['pytest'],
 )
