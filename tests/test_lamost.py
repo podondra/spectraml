@@ -1,6 +1,12 @@
 import os
 import pandas
+import pytest
 from spectraml import lamost
+
+
+@pytest.fixture
+def lamost_fits(data_dir):
+    return os.path.join(data_dir, 'spec-55916-B5591606_sp01-001.fits')
 
 
 def test_read_spectrum(lamost_fits):
