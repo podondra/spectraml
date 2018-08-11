@@ -1,4 +1,5 @@
 import os
+import pandas
 from spectraml import lamost
 
 
@@ -17,4 +18,6 @@ def test_read_spectrum():
 def test_preprocess_spectra():
     path = os.path.join(DATA, 'LAMOST-DR2')
     spectra = lamost.preprocess_spectra(path)
-    assert spectra.shape == (14, 140)
+    assert isinstance(spectra, pandas.DataFrame)
+    # there is 140 wavelengths and a column idicating data corruption
+    assert spectra.shape == (14, 141)
