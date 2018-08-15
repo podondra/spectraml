@@ -3,6 +3,7 @@ import warnings
 import numpy
 import pandas
 from astropy.io import fits
+from astropy import wcs
 from astropy.utils.exceptions import AstropyWarning
 import click
 from .preprocessing import START, END, N_WAVELENGTHS, preprocess_spectrum
@@ -25,8 +26,23 @@ def read_spectrum(filename):
 
 
 def read_dr1_spectrum(filename):
-    # TODO read a LAMOST DR1 spectrum
-    raise NotImplementedError
+    """Read a LAMOST DR1 spectrum from a FITS file."""
+    with fits.open(filename) as hdulist:
+        header = hdulist[0].header
+        identifier = header['FILENAME']
+        # flux is first row of data unit
+        flux = hdulist[0].data[0]
+        # lenght of first data axis
+        naxis1 = header['NAXIS1']
+        # pixels that such be tranformed to wavelengths
+        # has to have shape (naxis1, naxis) where naxis is number of axis in
+        # the FITS file
+        pixcr = numpy.arange(naxis1).reshape(-1, 1)[:, [0, 0]]
+        # compute the wavelenghts and get first column
+        # note that wavelenghts are logarithmic thefore they have to be
+        # transformed to linear wavelenghts
+        wave = 10 ** wcs.WCS(header).wcs_pix2world(pixcr, 0)[:, 0]
+    return identifier, wave, flux
 
 
 def preprocess_spectra(path, the_ext='.fits', verbose=False):
