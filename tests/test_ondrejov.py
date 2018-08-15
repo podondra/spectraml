@@ -1,5 +1,6 @@
 import os
 import pytest
+from astropy.io import fits
 from spectraml import ondrejov
 
 
@@ -9,7 +10,19 @@ def ondrejov_fits(data_dir):
 
 
 def test_read_spectrum(ondrejov_fits):
+    with fits.open(ondrejov_fits) as hdulist:
+        header = hdulist[0].header
+        fits_identifier = header['OBJECT']
+        naxis1 = header['NAXIS1']
+        fits_flux = hdulist[0].data
+        crval1 = header['CRVAL1']
+        cdelt1 = header['CDELT1']
     identifier, wave, flux = ondrejov.read_spectrum(ondrejov_fits)
-    # TODO come up with better test
-    assert isinstance(identifier, str)
-    assert wave is not None and flux is not None
+    # check correct identifier
+    assert identifier == fits_identifier
+    # check correct shapes
+    assert wave.shape[0] == naxis1 and flux.shape[0] == naxis1
+    # check correct flux
+    assert flux == pytest.approx(fits_flux)
+    # check that first and second wavelenghts are correctly computed
+    assert wave[0] == crval1 and wave[1] == crval1 + cdelt1
