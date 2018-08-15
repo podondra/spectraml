@@ -21,4 +21,3 @@ python-dateutil==2.7.3
 pytz==2018.5
 scipy==1.1.0
 six==1.11.0
--e git+git@github.com:podondra/spectraml.git@dc1b4510ded4ca3ade669eacb1194a898a79cbb0#egg=spectraml
