@@ -1,3 +1,4 @@
+"""Module for manipulation with LAMOST's spectra."""
 import os
 import warnings
 import numpy
@@ -46,6 +47,7 @@ def read_dr1_spectrum(filename):
 
 
 def preprocess_spectra(path, the_ext='.fits', verbose=False):
+    """"Preprocess LAMOST spectra and output CSV file."""
     fits_files = list(gen_files_with_ext(path, the_ext))
 
     # disable warnings
@@ -59,13 +61,13 @@ def preprocess_spectra(path, the_ext='.fits', verbose=False):
         fits_files = click.progressbar(fits_files)
         fits_files.__enter__()
 
-    for idx, f in enumerate(fits_files):
+    for idx, filename in enumerate(fits_files):
         try:
-            identifier, wave, flux = read_spectrum(f)
+            identifier, wave, flux = read_spectrum(filename)
         # WARNING: File may have been truncated
         # results in TypeError: buffer is too small for requested array
-        except (OSError, TypeError) as e:
-            identifiers.append(os.path.basename(f))
+        except (OSError, TypeError):
+            identifiers.append(os.path.basename(filename))
             corrupted[idx] = True
             continue
         identifiers.append(identifier)
@@ -75,11 +77,10 @@ def preprocess_spectra(path, the_ext='.fits', verbose=False):
         fits_files.__exit__(None, None, None)
 
     # construct pandas DataFrame
-    df = pandas.DataFrame(
-            fluxes,
-            index=identifiers,
-            columns=numpy.linspace(START, END, N_WAVELENGTHS)
-            )
-    df['corrupted'] = corrupted
-    df.index.name = 'identifier'
-    return df
+    preprocessed_spectra = pandas.DataFrame(
+        fluxes, index=identifiers,
+        columns=numpy.linspace(START, END, N_WAVELENGTHS)
+        )
+    preprocessed_spectra['corrupted'] = corrupted
+    preprocessed_spectra.index.name = 'identifier'
+    return preprocessed_spectra

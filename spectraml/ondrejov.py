@@ -1,3 +1,4 @@
+"""Module for manipulation with Ondrejov's spectra."""
 import numpy
 from astropy import wcs
 from astropy.io import fits
@@ -6,9 +7,9 @@ from astropy.io import fits
 def compute_wave(hdulist):
     """Compute spectrum's wavelengths from Ondřejov FITS file."""
     header = hdulist[0].header
-    w = wcs.WCS(header)
+    wcs_object = wcs.WCS(header)
     pixcrd = numpy.arange(header['NAXIS1'])
-    return w.all_pix2world(pixcrd, 0)[0]
+    return wcs_object.all_pix2world(pixcrd, 0)[0]
 
 
 def read_spectrum(filename):
@@ -16,7 +17,8 @@ def read_spectrum(filename):
     FITS file.
     """
     with fits.open(filename) as hdulist:
-        identifier = hdulist[0].header['OBJECT']
+        primary_hdu = hdulist[0]
+        identifier = primary_hdu.header['OBJECT']
         wave = compute_wave(hdulist)
-        flux = hdulist[0].data
+        flux = primary_hdu.data
     return identifier, wave, flux

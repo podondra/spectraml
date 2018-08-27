@@ -1,3 +1,4 @@
+"""CLI runner."""
 from .cli import cli
 
 

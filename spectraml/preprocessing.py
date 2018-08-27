@@ -1,3 +1,4 @@
+"""Preprocessing module with different tools to manipulate spectra."""
 import numpy
 from astropy import convolution
 
@@ -9,19 +10,21 @@ N_WAVELENGTHS = 140
 
 def interp_flux(
         wave, flux, new_wave=numpy.linspace(START, END, N_WAVELENGTHS)
-        ):
+    ):
+    """Interpolates flux from old wavelenghts to new wavelengths."""
     # TODO write a test
     return new_wave, numpy.interp(new_wave, wave, flux)
 
 
-def air2vacuum(air_wave):
+def convert_air2vacuum(air_wave):
     """Convert air wavelengths to vacuum wavelengths according to
     http://www.astro.uu.se/valdwiki/Air-to-vacuum%20conversion.
     """
     # TODO write a test
-    s = ((10 ** 4) / air_wave) ** 2
+    s_square = ((10 ** 4) / air_wave) ** 2
     return air_wave * (1 + 0.00008336624212083 + 0.02408926869968 / \
-            (130.1065924522 - s) + 0.0001599740894897 / (38.92568793293 - s))
+            (130.1065924522 - s_square) + 0.0001599740894897 / \
+            (38.92568793293 - s_square))
 
 
 def convolve_flux(flux, kernel=convolution.Gaussian1DKernel(stddev=7)):
@@ -34,9 +37,12 @@ def convolve_flux(flux, kernel=convolution.Gaussian1DKernel(stddev=7)):
 
 
 def preprocess_spectrum(wave, flux, air2vacuum=False, convolve=False):
+    """Wrapper function which applies preprocessing functions according
+    to provided parameters.
+    """
     # TODO write a test
     if air2vacuum:
-        wave = air2vacuum(wave)
+        wave = convert_air2vacuum(wave)
     if convolve:
         flux = convolve_flux(flux)
     wave, flux = interp_flux(wave, flux)
