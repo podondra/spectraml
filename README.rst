@@ -11,3 +11,15 @@ This project is tested using
 
 .. image:: https://travis-ci.org/podondra/spectraml.svg?branch=master
     :target: https://travis-ci.org/podondra/spectraml
+
+Docker
+------
+
+To run a Docker container use the command below after you build the image
+from provided Dockerfile.
+
+    $ docker run -it \
+        -v "$PWD":/root \
+        --name $CONTAINER_NAME \
+        $IMAGE_NAME bash
+    $ pip install -e .
