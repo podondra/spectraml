@@ -18,10 +18,7 @@ Docker
 To run a Docker container use the commands below after you build the image
 from provided Dockerfile:
 
-.. code:: python
+.. code::
 
-    $ docker run -it \
-        -v "$PWD":/root \
-        --name $CONTAINER_NAME \
-        $IMAGE_NAME bash
-    $ pip install -e .
+    $ docker run -it -v "$PWD":/root --name $CONTAINER_NAME $IMAGE_NAME bash
+    # pip install -e .
