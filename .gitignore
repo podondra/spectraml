@@ -1,3 +1,9 @@
+# Python shell
+.python_history
+
+# Pylint
+.pylint.d/
+
 # Bash
 .bash_history
 
