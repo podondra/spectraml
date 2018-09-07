@@ -15,8 +15,10 @@ This project is tested using
 Docker
 ------
 
-To run a Docker container use the command below after you build the image
-from provided Dockerfile.
+To run a Docker container use the commands below after you build the image
+from provided Dockerfile:
+
+.. code:: python
 
     $ docker run -it \
         -v "$PWD":/root \
