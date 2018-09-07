@@ -9,11 +9,13 @@ from spectraml import lamost
 
 @pytest.fixture
 def lamost_fits(data_dir):
+    """LAMOST DR2 FITS file fixture."""
     return os.path.join(data_dir, 'spec-55916-B5591606_sp01-001.fits')
 
 
 @pytest.fixture
 def lamost_dr1_fits(data_dir):
+    """LAMOST DR1 FITS file fixture."""
     return os.path.join(data_dir, 'spec-55939-B5593905_sp01-018.fits')
 
 
@@ -49,6 +51,7 @@ def test_read_dr1_spectrum(lamost_dr1_fits):
 
 
 def test_preprocess_spectra(data_dir):
+    """Test preprocessing of LAMOST data."""
     path = os.path.join(data_dir, 'LAMOST-DR2')
     spectra = lamost.preprocess_spectra(path)
     assert isinstance(spectra, pandas.DataFrame)

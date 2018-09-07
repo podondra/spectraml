@@ -6,11 +6,13 @@ from spectraml import xmatch
 
 @pytest.fixture
 def candidates_catalogue(data_dir):
+    """Catalogue with candidates file fixture."""
     return pd.read_csv(os.path.join(data_dir, 'candidates-catalogue.csv'))
 
 
 @pytest.fixture
 def hou_catalogue(data_dir):
+    """Catalogue with Hou's spectra file fixture."""
     return pd.read_csv(os.path.join(data_dir, 'hou-catalogue.csv'))
 
 
