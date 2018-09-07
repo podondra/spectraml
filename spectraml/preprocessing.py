@@ -20,7 +20,6 @@ def convert_air2vacuum(air_wave):
     """Convert air wavelengths to vacuum wavelengths according to
     http://www.astro.uu.se/valdwiki/Air-to-vacuum%20conversion.
     """
-    # TODO write a test
     s_square = ((10 ** 4) / air_wave) ** 2
     return air_wave * (1 + 0.00008336624212083 + 0.02408926869968 / \
             (130.1065924522 - s_square) + 0.0001599740894897 / \
