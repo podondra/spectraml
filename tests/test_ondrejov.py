@@ -6,10 +6,12 @@ from spectraml import ondrejov
 
 @pytest.fixture
 def ondrejov_fits(datadir):
+    """Ondrejov's FITS file fixture."""
     return os.path.join(datadir, 'oe270005.fits')
 
 
 def test_read_spectrum(ondrejov_fits):
+    """Test reading of Ondrejov's FITS file."""
     with fits.open(ondrejov_fits) as hdulist:
         header = hdulist[0].header
         fits_identifier = header['OBJECT']
