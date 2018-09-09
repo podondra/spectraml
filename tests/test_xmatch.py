@@ -5,13 +5,13 @@ from spectraml import xmatch
 
 
 @pytest.fixture
-def candidates_catalogue(data_dir):
-    return pd.read_csv(os.path.join(data_dir, 'candidates-catalogue.csv'))
+def candidates_catalogue(datadir):
+    return pd.read_csv(os.path.join(datadir, 'candidates-catalogue.csv'))
 
 
 @pytest.fixture
-def hou_catalogue(data_dir):
-    return pd.read_csv(os.path.join(data_dir, 'hou-catalogue.csv'))
+def hou_catalogue(datadir):
+    return pd.read_csv(os.path.join(datadir, 'hou-catalogue.csv'))
 
 
 def test_xmatch(candidates_catalogue, hou_catalogue):

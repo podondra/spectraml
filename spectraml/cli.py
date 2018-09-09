@@ -1,7 +1,9 @@
 """Package's command line interface."""
 import click
+import h5py
 import pandas as pd
-from .lamost import read_spectrum, preprocess_spectra
+from .lamost import read_spectrum
+from .preprocessing import preprocess_spectra
 from .visualize import visualize_spectrum
 from .xmatch import xmatch as cross_match
 
@@ -13,19 +15,28 @@ def cli():
 
 
 @cli.command()
-@click.argument('path', type=click.Path(exists=True))
+@click.argument('hdf5', type=click.Path())
+@click.argument('group')
+@click.argument('fits_list', type=click.File('r'))
 @click.option(
-    '-o', '--out-file', default='data.csv', type=click.File('w'),
-    help='File in which to output preprocessing result.'
+    '-s', '--start', default=6519, help='Resampled wavelengths start.'
 )
-def preprocessing(path, out_file):
-    """Preprocess spectra from FITS files in PATH/ directory and ouput them
-    to file specified as out_file option.
-    """
-    # preprocess spectra
-    preprocessed_spectra = preprocess_spectra(path, verbose=True)
-    # write them to a out_file
-    preprocessed_spectra.to_csv(out_file)
+@click.option(
+    '-e', '--end', default=6732, help='Resampled wavelengths end.'
+)
+@click.option(
+    '-w', '--wavelenghts', default=140,
+    help='Number of wavelenghts to resample to.'
+)
+def preprocessing(hdf5, group, fits_list, start, end, wavelenghts):
+    """Preprocess FITS files from FITS_LIST into HDF5 file."""
+    hdf5_file = h5py.File(hdf5, 'w')
+    fits_files_list = fits_list.read().splitlines()
+    preprocess_spectra(
+        hdf5_file, group,
+        fits_files_list, read_spectrum,
+        start, end, wavelenghts
+    )
 
 
 @cli.command()

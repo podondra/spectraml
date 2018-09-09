@@ -1,14 +1,7 @@
 """Module for manipulation with LAMOST's spectra."""
-import os
-import warnings
-import numpy
-import pandas
-from astropy.io import fits
 from astropy import wcs
-from astropy.utils.exceptions import AstropyWarning
-import click
-from .preprocessing import START, END, N_WAVELENGTHS, preprocess_spectrum
-from .utils import gen_files_with_ext
+from astropy.io import fits
+import numpy
 
 
 def read_spectrum(filename):
@@ -44,43 +37,3 @@ def read_dr1_spectrum(filename):
         # transformed to linear wavelenghts
         wave = 10 ** wcs.WCS(header).wcs_pix2world(pixcr, 0)[:, 0]
     return identifier, wave, flux
-
-
-def preprocess_spectra(path, the_ext='.fits', verbose=False):
-    """"Preprocess LAMOST spectra and output CSV file."""
-    fits_files = list(gen_files_with_ext(path, the_ext))
-
-    # disable warnings
-    warnings.simplefilter('ignore', category=AstropyWarning)
-
-    identifiers = list()
-    fluxes = numpy.zeros((len(fits_files), N_WAVELENGTHS))
-    corrupted = numpy.zeros(len(fits_files), dtype=numpy.bool_)
-
-    if verbose:
-        fits_files = click.progressbar(fits_files)
-        fits_files.__enter__()
-
-    for idx, filename in enumerate(fits_files):
-        try:
-            identifier, wave, flux = read_spectrum(filename)
-        # WARNING: File may have been truncated
-        # results in TypeError: buffer is too small for requested array
-        except (OSError, TypeError):
-            identifiers.append(os.path.basename(filename))
-            corrupted[idx] = True
-            continue
-        identifiers.append(identifier)
-        _, fluxes[idx] = preprocess_spectrum(wave, flux)
-
-    if verbose:
-        fits_files.__exit__(None, None, None)
-
-    # construct pandas DataFrame
-    preprocessed_spectra = pandas.DataFrame(
-        fluxes, index=identifiers,
-        columns=numpy.linspace(START, END, N_WAVELENGTHS)
-        )
-    preprocessed_spectra['corrupted'] = corrupted
-    preprocessed_spectra.index.name = 'identifier'
-    return preprocessed_spectra
